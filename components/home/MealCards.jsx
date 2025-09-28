@@ -85,8 +85,8 @@ const MealCards = () => {
                         ABC Ventures <span className="text-[#D4AF37]">- City A</span>
                     </h2>
 
-                    <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-                        Discover our carefully crafted meals made with the finest ingredients
+                    <p className="font-medium text-[#D4AF37] text-lg max-w-2xl mx-auto">
+                        The best city view Dining
                     </p>
                 </div>
 
