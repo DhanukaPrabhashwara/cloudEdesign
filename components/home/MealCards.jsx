@@ -81,9 +81,10 @@ const MealCards = () => {
             <div className="container mx-auto px-4">
                 {/* Section Header */}
                 <div className="text-center mb-12">
-                    <h2 className="text-4xl font-playfair font-bold text-gray-800 mb-4">
-                        Our Menu
+                    <h2 className="text-5xl font-playfair font-bold text-[#8A1739] mb-4">
+                        ABC Ventures <span className="text-[#D4AF37]">- City A</span>
                     </h2>
+
                     <p className="text-gray-600 text-lg max-w-2xl mx-auto">
                         Discover our carefully crafted meals made with the finest ingredients
                     </p>
