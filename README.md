@@ -5,7 +5,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 Clone the repository:
 
 ```bash
-git clone <your-repository-url>
+git clone https://github.com/DhanukaPrabhashwara/cloudEdesign.git
 cd restaurant-website
 ```
 
