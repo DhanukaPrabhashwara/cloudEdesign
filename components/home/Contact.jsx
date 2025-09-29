@@ -7,13 +7,17 @@ export default function Contact() {
             <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12">
                 {/* Left side */}
                 <div>
-                    <h2 className="text-5xl font-playfair font-bold mb-2">
-                        <span className="text-[#8A1739]">Get</span>{" "}
-                        <span className="text-[#D4AF37]">in Touch</span>
-                    </h2>
-                    <p className="text-[#D4AF37] font-semibold mb-4">
-                        CONNECT WITH US
-                    </p>
+                    <div>
+                        <h2 className="text-5xl font-playfair font-bold mb-2">
+                            <span className="text-[#8A1739]">Get</span>{" "}
+                            <span className="text-[#D4AF37]">in Touch</span>
+                        </h2>
+                        <div className="flex justify-center pr-6">
+                            <p className="text-[#D4AF37] font-semibold mb-4">
+                                CONNECT WITH US
+                            </p>
+                        </div>
+                    </div>
 
                     {/* New description text */}
                     <p className="text-black max-w-md mb-12">
@@ -23,25 +27,37 @@ export default function Contact() {
 
                     <div className="space-y-8">
                         <div className="flex items-start space-x-4">
-                            <FaMapMarkerAlt className="text-[#8A1739] text-2xl mt-1" />
+                            <img
+                                src="/map.png"
+                                alt="Location marker"
+                                className="w-7 h-7 mt-1"
+                            />
                             <div>
-                                <h4 className="text-[#D4AF37] font-semibold">Visit Us</h4>
+                                <h4 className="text-[#D4AF37] font-medium">Visit Us</h4>
                                 <p className="text-gray-400">City, Country</p>
                             </div>
                         </div>
 
                         <div className="flex items-start space-x-4">
-                            <FaEnvelope className="text-[#8A1739] text-2xl mt-1" />
+                            <img
+                                src="/mail.png"
+                                alt="Email icon"
+                                className="w-6 h-5 mt-1"
+                            />
                             <div>
-                                <h4 className="text-[#D4AF37] font-semibold">Email Us</h4>
+                                <h4 className="text-[#D4AF37] font-medium">Email Us</h4>
                                 <p className="text-gray-400">info@abcventures.com</p>
                             </div>
                         </div>
 
                         <div className="flex items-start space-x-4">
-                            <FaPhone className="text-[#8A1739] text-2xl mt-1" />
+                            <img
+                                src="/phone.png"
+                                alt="Phone icon"
+                                className="w-6 h-6 mt-1"
+                            />
                             <div>
-                                <h4 className="text-[#D4AF37] font-semibold">Call Us</h4>
+                                <h4 className="text-[#D4AF37] font-medium">Call Us</h4>
                                 <p className="text-gray-400">+XXX XXXX XXXX</p>
                             </div>
                         </div>
@@ -50,7 +66,7 @@ export default function Contact() {
 
                 {/* Right side */}
                 <div>
-                    <h2 className="text-lg font-playfair font-medium mb-2">
+                    <h2 className="text-lg font-playfair font-bold mb-2">
                         SEND YOUR MESSAGE
                     </h2>
                     <form className="space-y-6">
@@ -79,7 +95,7 @@ export default function Contact() {
                             <label className="block text-gray-600 mb-2">Subject</label>
                             <select
                                 className="w-full px-4 py-3 bg-[#f6f2f1] focus:outline-none 
-                 rounded-tl-2xl rounded-br-2xl"
+                 rounded-tl-2xl rounded-br-2xl pr-20"
                             >
                                 <option>Restaurant Inquiry</option>
                                 <option>Business Inquiry</option>
@@ -93,15 +109,14 @@ export default function Contact() {
                                 rows="5"
                                 placeholder="Type your message here..."
                                 className="w-full px-4 py-3 bg-[#f6f2f1] focus:outline-none 
-                 rounded-tl-2xl rounded-br-2xl"
+               rounded-tl-2xl rounded-br-2xl resize-none border-none appearance-none"
                             />
                         </div>
 
                         <div className="flex justify-end">
                             <button
                                 type="submit"
-                                className="bg-[#8A1739] text-white px-6 py-3 
-                 rounded-tl-2xl rounded-br-2xl hover:opacity-90"
+                                className="bg-[#8A1739] text-white px-6 py-3 font-playfair rounded-tl-2xl rounded-br-2xl hover:opacity-90"
                             >
                                 Send Message
                             </button>
