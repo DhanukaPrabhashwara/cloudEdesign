@@ -19,7 +19,6 @@ export default function Contact() {
                         </div>
                     </div>
 
-                    {/* New description text */}
                     <p className="text-black max-w-md mb-12">
                         Ready to experience the finest in hospitality? Contact us to learn
                         more about our restaurants, services, or partnership opportunities.

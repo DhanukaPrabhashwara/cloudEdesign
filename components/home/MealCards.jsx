@@ -1,6 +1,20 @@
+"use client";
+
 import Image from "next/image";
+import { useState } from "react";
 
 const MealCards = () => {
+    const [activeFilter, setActiveFilter] = useState("All");
+
+    const filters = [
+        "All",
+        "Breakfast", 
+        "Lunch",
+        "Dinner",
+        "Events",
+        "Offers"
+    ];
+
     const meals = [
         {
             id: 1,
@@ -76,6 +90,14 @@ const MealCards = () => {
         }
     ];
 
+    const handleFilterChange = (filter) => {
+        setActiveFilter(filter);
+    };
+
+    const filteredMeals = activeFilter === "All" 
+        ? meals 
+        : meals.filter(meal => meal.category === activeFilter);
+
     return (
         <section className="py-16 bg-gray-50">
             <div className="container mx-auto px-4">
@@ -90,9 +112,26 @@ const MealCards = () => {
                     </p>
                 </div>
 
+                {/* Menu Filter */}
+                <div className="flex flex-wrap justify-end gap-2 md:gap-3 mb-12">
+                    {filters.map((filter, index) => (
+                        <button
+                            key={index}
+                            onClick={() => handleFilterChange(filter)}
+                            className={`px-6 py-3 rounded-tl-2xl rounded-br-2xl font-medium transition-all duration-300 text-sm md:text-base ${
+                                activeFilter === filter
+                                    ? "bg-white text-gray-800 shadow-md"
+                                    : "bg-[#8A878766] text-white hover:bg-gray-400"
+                            }`}
+                        >
+                            {filter}
+                        </button>
+                    ))}
+                </div>
+
                 {/* Cards Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {meals.map((meal) => (
+                    {filteredMeals.map((meal) => (
                         <div
                             key={meal.id}
                             className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
