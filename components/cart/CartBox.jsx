@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useClickOutside } from '@/hooks/useClickOutside';  
 import { useCart } from '@/contexts/CartContext';           
@@ -9,13 +9,13 @@ import { formatPrice } from '@/lib/cartUtils';
 // Internal component - only used within CartBox
 const CartItem = ({ item, onIncrement, onDecrement, onRemove }) => {
     return (
-        <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+        <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-tl-2xl rounded-br-2xl">
             <Image
                 src={item.image || '/placeholder.png'}
                 alt={item.name}
                 width={60}
                 height={60}
-                className="rounded-md object-cover"
+                className="rounded-tl-2xl rounded-br-2xl object-cover"
             />
             
             <div className="flex-1">
@@ -26,20 +26,20 @@ const CartItem = ({ item, onIncrement, onDecrement, onRemove }) => {
             <div className="flex items-center gap-2">
                 <button
                     onClick={() => onDecrement(item.id)}
-                    className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-md hover:bg-gray-100"
+                    className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-tl-2xl rounded-br-2xl hover:bg-gray-100 transition-colors"
                 >
                     -
                 </button>
                 <span className="w-8 text-center font-medium">{item.quantity}</span>
                 <button
                     onClick={() => onIncrement(item.id)}
-                    className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-md hover:bg-gray-100"
+                    className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-tl-2xl rounded-br-2xl hover:bg-gray-100 transition-colors"
                 >
                     +
                 </button>
                 <button
                     onClick={() => onRemove(item.id)}
-                    className="ml-2 text-red-600 hover:text-red-800"
+                    className="ml-2 w-8 h-8 flex items-center justify-center text-red-600 hover:text-white hover:bg-red-600 rounded-tl-2xl rounded-br-2xl transition-colors"
                 >
                     ✕
                 </button>
@@ -56,7 +56,7 @@ const EmptyCart = () => {
                 No items in Cart
             </h2>
 
-            <div className="w-[180px] h-[100px] bg-gray-200 rounded-lg mx-auto mb-6"></div>
+            <div className="w-[180px] h-[100px] bg-gray-200 rounded-tl-2xl rounded-br-2xl mx-auto mb-6"></div>
 
             <div className="border-t border-gray-300 my-6"></div>
 
@@ -71,10 +71,10 @@ const EmptyCart = () => {
             <div className="border-t border-gray-300 mb-6"></div>
 
             <div className="flex gap-4">
-                <button className="flex-1 py-3 border-2 border-[#8A1739] text-[#8A1739] rounded-lg font-medium hover:bg-gray-50 transition-colors">
+                <button className="flex-1 py-3 border-2 border-[#8A1739] text-[#8A1739] rounded-tl-2xl rounded-br-2xl font-medium hover:bg-gray-50 transition-colors">
                     View Cart
                 </button>
-                <button className="flex-1 py-3 bg-gray-400 text-white rounded-lg font-medium cursor-not-allowed">
+                <button className="flex-1 py-3 bg-gray-400 text-white rounded-tl-2xl rounded-br-2xl font-medium cursor-not-allowed">
                     Checkout
                 </button>
             </div>
@@ -95,7 +95,24 @@ function CartBox() {
     } = useCart();
 
     const cartRef = useRef(null);
+    const [isAnimating, setIsAnimating] = useState(false);
+    
     useClickOutside(cartRef, closeCart);
+
+    // Handle animation state
+    useEffect(() => {
+        if (isCartOpen) {
+            setIsAnimating(true);
+        }
+    }, [isCartOpen]);
+
+    // Handle close with animation
+    const handleClose = () => {
+        setIsAnimating(false);
+        setTimeout(() => {
+            closeCart();
+        }, 300);
+    };
 
     if (!isCartOpen) return null;
 
@@ -103,17 +120,27 @@ function CartBox() {
 
     return (
         <>
-            {/* Dark Backdrop Overlay */}
-            <div className="fixed inset-0 bg-black/30 z-40" onClick={closeCart} />
+            {/* Dark Backdrop Overlay with fade animation */}
+            <div 
+                className={`fixed inset-0 bg-black/30 z-[65] transition-opacity duration-300 ease-in-out ${
+                    isAnimating ? 'opacity-100' : 'opacity-0'
+                }`}
+                onClick={handleClose}
+            />
 
-            {/* Cart Box */}
+            {/* Cart Box with slide and fade animation */}
             <div
                 ref={cartRef}
-                className="fixed top-8 right-8 w-[480px] bg-white rounded-lg shadow-2xl z-50 border border-gray-200"
+                className={`fixed top-8 right-8 w-[480px] bg-white rounded-tl-2xl rounded-br-2xl shadow-2xl z-[71] border border-gray-200
+                    transform transition-all duration-300 ease-in-out ${
+                    isAnimating 
+                        ? 'translate-x-0 opacity-100 scale-100' 
+                        : 'translate-x-8 opacity-0 scale-95'
+                }`}
             >
                 {/* Close Button */}
                 <button
-                    onClick={closeCart}
+                    onClick={handleClose}
                     className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center border-2 border-gray-800 rounded-full hover:bg-gray-100 transition-colors"
                     aria-label="Close cart"
                 >
@@ -154,10 +181,10 @@ function CartBox() {
                             <div className="border-t border-gray-300 mb-6"></div>
 
                             <div className="flex gap-4">
-                                <button className="flex-1 py-3 border-2 border-[#8A1739] text-[#8A1739] rounded-lg font-medium hover:bg-[#8A1739] hover:text-white transition-colors">
+                                <button className="flex-1 py-3 border-2 border-[#8A1739] text-[#8A1739] rounded-tl-2xl rounded-br-2xl font-medium hover:bg-[#8A1739] hover:text-white transition-colors">
                                     View Cart
                                 </button>
-                                <button className="flex-1 py-3 bg-[#8A1739] text-white rounded-lg font-medium hover:bg-[#7A0F2F] transition-colors">
+                                <button className="flex-1 py-3 bg-[#8A1739] text-white rounded-tl-2xl rounded-br-2xl font-medium hover:bg-[#7A0F2F] transition-colors">
                                     Checkout
                                 </button>
                             </div>
