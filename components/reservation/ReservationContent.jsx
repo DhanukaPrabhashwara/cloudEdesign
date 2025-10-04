@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 export default function ReservationContent({ meal }) {
     const router = useRouter();
     const { addToCart } = useCart();
-    
+
     const [kidsTickets, setKidsTickets] = useState(0);
     const [adultsTickets, setAdultsTickets] = useState(1);
     const [selectedDate, setSelectedDate] = useState('');
@@ -68,11 +68,10 @@ export default function ReservationContent({ meal }) {
                             <button
                                 key={index}
                                 onClick={() => setCurrentImageIndex(index)}
-                                className={`relative w-24 h-24 rounded-tl-2xl rounded-br-2xl overflow-hidden border-2 ${
-                                    currentImageIndex === index
+                                className={`relative w-24 h-24 rounded-tl-2xl rounded-br-2xl overflow-hidden border-2 ${currentImageIndex === index
                                         ? 'border-[#8A1739]'
                                         : 'border-gray-300'
-                                }`}
+                                    }`}
                             >
                                 <Image
                                     src={image}
@@ -147,7 +146,7 @@ export default function ReservationContent({ meal }) {
                     {/* Available Options */}
                     <div className="mb-6">
                         <h3 className="text-lg font-semibold mb-4">Available Options</h3>
-                        
+
                         <p className="text-sm text-gray-600 mb-3">*Ticket Type & Quantity</p>
 
                         {/* Ticket Counters */}
@@ -230,9 +229,15 @@ export default function ReservationContent({ meal }) {
                             onClick={handleAddToCart}
                             className="flex-1 py-3 bg-[#8A1739] text-white rounded-tl-2xl rounded-br-2xl font-medium hover:bg-[#8A1739]/90 transition-colors flex items-center justify-center gap-2"
                         >
-                            <span>🛒</span>
+                            <Image
+                                src="/cart.png"
+                                alt="cart"
+                                width={20}
+                                height={20}
+                            />
                             Add To Cart
                         </button>
+
                     </div>
                 </div>
             </div>
