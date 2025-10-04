@@ -175,7 +175,7 @@ export default function ReservationContent({ meal }) {
                             {/* Ticket Counters */}
                             <div className="grid grid-cols-2 gap-4 mb-4">
                                 {/* Kids Ticket */}
-                                <div className="border-2 border-gray-300 rounded-tl-2xl rounded-br-2xl p-4">
+                                <div className="border-2 border-[#8A1739] rounded-tl-2xl rounded-br-2xl p-4">
                                     <p className="text-center font-medium mb-3 text-[#D4AF37]">Kids Ticket</p>
                                     <div className="flex items-center justify-center gap-4">
                                         <button
@@ -195,7 +195,7 @@ export default function ReservationContent({ meal }) {
                                 </div>
 
                                 {/* Adults Ticket */}
-                                <div className="border-2 border-gray-300 rounded-tl-2xl rounded-br-2xl p-4">
+                                <div className="border-2 border-[#8A1739] rounded-tl-2xl rounded-br-2xl p-4">
                                     <p className="text-center font-medium mb-3 text-[#D4AF37]">Adults Ticket</p>
                                     <div className="flex items-center justify-center gap-4">
                                         <button
@@ -223,7 +223,7 @@ export default function ReservationContent({ meal }) {
                                         type="date"
                                         value={selectedDate}
                                         onChange={(e) => setSelectedDate(e.target.value)}
-                                        className="w-full p-3 border-2 border-gray-300 rounded-tl-2xl rounded-br-2xl focus:outline-none focus:border-[#8A1739]"
+                                        className="w-full p-3 border-2 border-[#8A1739] rounded-tl-2xl rounded-br-2xl focus:outline-none focus:border-[#8A1739]"
                                         placeholder="- Please Select -"
                                     />
                                 </div>
