@@ -24,7 +24,7 @@ function Header() {
     };
 
     return (
-        <div className="fixed top-0 left-0 w-full z-50 bg-transparent p-[42px] flex flex-row justify-between items-center">
+        <div className="fixed top-0 left-0 w-full z-[60] bg-transparent p-[42px] flex flex-row justify-between items-center">
             <a href={'/'}>
                 <Logo />
             </a>
