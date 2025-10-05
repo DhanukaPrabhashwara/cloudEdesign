@@ -1,5 +1,6 @@
 import HeroSection from '@/components/home/HeroSection';
 import ReservationContent from '@/components/reservation/ReservationContent';
+import ReviewsSection from '@/components/reservation/ReviewsSection';
 import { getMealBySlug } from '@/lib/mealsData';
 import { notFound } from 'next/navigation';
 
@@ -14,6 +15,7 @@ export default function ReservationPage({ params }) {
         <>
             <HeroSection />
             <ReservationContent meal={meal} />
+            <ReviewsSection reviews={meal.reviews || []} />
         </>
     );
 }
