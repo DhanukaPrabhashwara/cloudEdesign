@@ -2,9 +2,10 @@
 
 import React, { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
-import { useClickOutside } from '@/hooks/useClickOutside';  
-import { useCart } from '@/contexts/CartContext';           
+import { useClickOutside } from '@/hooks/useClickOutside';
+import { useCart } from '@/contexts/CartContext';
 import { formatPrice } from '@/lib/cartUtils';
+import { useRouter } from 'next/navigation';
 
 // Internal component - only used within CartBox
 const CartItem = ({ item, onIncrement, onDecrement, onRemove }) => {
@@ -17,7 +18,7 @@ const CartItem = ({ item, onIncrement, onDecrement, onRemove }) => {
                 height={60}
                 className="rounded-tl-2xl rounded-br-2xl object-cover"
             />
-            
+
             <div className="flex-1">
                 <h3 className="font-medium text-gray-900">{item.name}</h3>
                 <p className="text-sm text-gray-600">{formatPrice(item.price)}</p>
@@ -84,6 +85,7 @@ const EmptyCart = () => {
 
 // Main exported component
 function CartBox() {
+    const router = useRouter();
     const {
         cartItems,
         isCartOpen,
@@ -96,7 +98,7 @@ function CartBox() {
 
     const cartRef = useRef(null);
     const [isAnimating, setIsAnimating] = useState(false);
-    
+
     useClickOutside(cartRef, closeCart);
 
     // Handle animation state
@@ -114,6 +116,22 @@ function CartBox() {
         }, 300);
     };
 
+    // Handle View Cart - Close cart then navigate
+    const handleViewCart = () => {
+        handleClose(); // Close with animation
+        setTimeout(() => {
+            router.push('/cart'); // Navigate after animation
+        }, 300);
+    };
+
+    // Handle Checkout - Close cart then navigate
+    const handleCheckout = () => {
+        handleClose(); // Close with animation
+        setTimeout(() => {
+            router.push('/checkout'); // Navigate after animation
+        }, 300);
+    };
+
     if (!isCartOpen) return null;
 
     const isEmpty = cartItems.length === 0;
@@ -121,7 +139,7 @@ function CartBox() {
     return (
         <>
             {/* Dark Backdrop Overlay with fade animation */}
-            <div 
+            <div
                 className={`fixed inset-0 bg-black/30 z-[65] transition-opacity duration-300 ease-in-out ${
                     isAnimating ? 'opacity-100' : 'opacity-0'
                 }`}
@@ -133,10 +151,10 @@ function CartBox() {
                 ref={cartRef}
                 className={`fixed top-8 right-8 w-[480px] bg-white rounded-tl-2xl rounded-br-2xl shadow-2xl z-[71] border border-gray-200
                     transform transition-all duration-300 ease-in-out ${
-                    isAnimating 
-                        ? 'translate-x-0 opacity-100 scale-100' 
-                        : 'translate-x-8 opacity-0 scale-95'
-                }`}
+                        isAnimating
+                            ? 'translate-x-0 opacity-100 scale-100'
+                            : 'translate-x-8 opacity-0 scale-95'
+                    }`}
             >
                 {/* Close Button */}
                 <button
@@ -181,10 +199,17 @@ function CartBox() {
                             <div className="border-t border-gray-300 mb-6"></div>
 
                             <div className="flex gap-4">
-                                <button className="flex-1 py-3 border-2 border-[#8A1739] text-[#8A1739] rounded-tl-2xl rounded-br-2xl font-medium hover:bg-[#8A1739] hover:text-white transition-colors">
+                                <button
+                                    onClick={handleViewCart}
+                                    className="flex-1 py-3 border-2 border-[#8A1739] text-[#8A1739] rounded-tl-2xl rounded-br-2xl font-medium hover:bg-[#8A1739] hover:text-white transition-colors"
+                                >
                                     View Cart
                                 </button>
-                                <button className="flex-1 py-3 bg-[#8A1739] text-white rounded-tl-2xl rounded-br-2xl font-medium hover:bg-[#7A0F2F] transition-colors">
+
+                                <button 
+                                    onClick={handleCheckout}
+                                    className="flex-1 py-3 bg-[#8A1739] text-white rounded-tl-2xl rounded-br-2xl font-medium hover:bg-[#7A0F2F] transition-colors"
+                                >
                                     Checkout
                                 </button>
                             </div>

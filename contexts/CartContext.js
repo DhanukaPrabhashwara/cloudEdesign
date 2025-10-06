@@ -59,6 +59,17 @@ export const CartProvider = ({ children }) => {
                 item.id === itemId ? { ...item, quantity } : item
             )
         );
+    }, [removeFromCart]);
+
+    // Update cart item details (date, adults, kids, etc.) - ADD THIS
+    const updateCartItemQuantity = useCallback((itemId, updates) => {
+        setCartItems(prevItems =>
+            prevItems.map(item =>
+                item.id === itemId
+                    ? { ...item, details: { ...item.details, ...updates } }
+                    : item
+            )
+        );
     }, []);
 
     // Increment quantity
@@ -117,6 +128,7 @@ export const CartProvider = ({ children }) => {
         addToCart,
         removeFromCart,
         updateQuantity,
+        updateCartItemQuantity, // ADD THIS to the value object
         incrementQuantity,
         decrementQuantity,
         clearCart,
