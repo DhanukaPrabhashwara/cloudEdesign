@@ -3,143 +3,39 @@
 import Image from "next/image";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { getMealsByCityAndCategory } from "@/lib/data/meals";
+import { getAllCategories } from "@/lib/data/categories";
+import { getCityById } from "@/lib/data/cities";
 
 const MealCards = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const currentCity = searchParams.get('city') || 'city-a';
-    const [activeFilter, setActiveFilter] = useState("All");
+    const [activeFilter, setActiveFilter] = useState("all");
 
-    const filters = [
-        "All",
-        "Breakfast", 
-        "Lunch",
-        "Dinner",
-        "Events",
-        "Offers"
-    ];
+    // Get filters from categories data
+    const filters = getAllCategories();
 
-    const meals = [
-        // City A - Breakfast
-        {
-            id: 1,
-            title: "Arabic Breakfast",
-            description: "Enjoy the authentic Middle Eastern flavors",
-            price: "USD 1,000",
-            image: "/image.png",
-            category: "Breakfast",
-            slug: "arabic-breakfast",
-            city: "city-a"
-        },
-        {
-            id: 2,
-            title: "English Breakfast",
-            description: "Taste the real British breakfast",
-            price: "USD 1,000",
-            image: "/englishbreakfast.png",
-            category: "Breakfast",
-            slug: "english-breakfast",
-            city: "city-a"
-        },
-        {
-            id: 3,
-            title: "Healthy Breakfast",
-            description: "Delight in clean and nutritious breakfast",
-            price: "USD 1,000",
-            image: "/healthybreakfast.png",
-            category: "Breakfast",
-            slug: "healthy-breakfast",
-            city: "city-a"
-        },
-        // City A - Lunch
-        {
-            id: 4,
-            title: "Arabic Lunch",
-            description: "Authentic Middle Eastern lunch dishes",
-            price: "USD 1,200",
-            image: "/arabiclunch.png",
-            category: "Lunch",
-            slug: "arabic-lunch",
-            city: "city-a"
-        },
-        {
-            id: 5,
-            title: "English Lunch",
-            description: "Fresh vegetables and protein in savory sauce",
-            price: "USD 950",
-            image: "/englishlunch.png",
-            category: "Lunch",
-            slug: "english-lunch",
-            city: "city-a"
-        },
-        {
-            id: 6,
-            title: "Healthy Lunch",
-            description: "Healthy Mediterranean diet bowl",
-            price: "USD 1,100",
-            image: "/healthylunch.png",
-            category: "Lunch",
-            slug: "healthy-lunch",
-            city: "city-a"
-        },
-        // City A - Dinner
-        {
-            id: 7,
-            title: "Arabic Dinner",
-            description: "Fresh salmon with seasonal vegetables",
-            price: "USD 1,500",
-            image: "/arabicdinner.png",
-            category: "Dinner",
-            slug: "arabic-dinner",
-            city: "city-a"
-        },
-        {
-            id: 8,
-            title: "English Dinner",
-            description: "Premium beef steak cooked to perfection",
-            price: "USD 1,800",
-            image: "/englishdinner.png",
-            category: "Dinner",
-            slug: "english-dinner",
-            city: "city-a"
-        },
-        {
-            id: 9,
-            title: "Healthy Dinner",
-            description: "Plant-based meal full of flavors",
-            price: "USD 900",
-            image: "/healthydinner.png",
-            category: "Dinner",
-            slug: "healthy-dinner",
-            city: "city-a"
-        }
-    ];
-
-    const handleFilterChange = (filter) => {
-        setActiveFilter(filter);
+    const handleFilterChange = (filterSlug) => {
+        setActiveFilter(filterSlug);
     };
 
     const handleReserveTable = (meal) => {
         router.push(`/reservation/${meal.slug}?city=${currentCity}`);
     };
 
-    // Filter by city first
-    const cityMeals = meals.filter(meal => meal.city === currentCity);
-    
-    // Group by category
+    // Get meals from data file instead of hardcoded array
+    const cityMeals = getMealsByCityAndCategory(currentCity, activeFilter);
+
+    // Group by category for "All" filter
     const groupedMeals = {
-        Breakfast: cityMeals.filter(meal => meal.category === "Breakfast"),
-        Lunch: cityMeals.filter(meal => meal.category === "Lunch"),
-        Dinner: cityMeals.filter(meal => meal.category === "Dinner")
+        breakfast: cityMeals.filter(meal => meal.category === "breakfast"),
+        lunch: cityMeals.filter(meal => meal.category === "lunch"),
+        dinner: cityMeals.filter(meal => meal.category === "dinner")
     };
 
-    // Get city name for display
-    const cityNames = {
-        'city-a': 'City A',
-        'city-b': 'City B',
-        'city-c': 'City C',
-        'city-d': 'City D'
-    };
+    // Get city info
+    const cityInfo = getCityById(currentCity);
 
     // Render meal cards
     const renderMealCards = (meals) => (
@@ -170,7 +66,7 @@ const MealCards = () => {
                                 {meal.title}
                             </h3>
                             <span className="text-lg font-bold text-[#D4AF37]">
-                                {meal.price}
+                                USD {meal.price}
                             </span>
                         </div>
 
@@ -203,66 +99,66 @@ const MealCards = () => {
                 {/* Section Header */}
                 <div className="text-center mb-12">
                     <h2 className="text-5xl font-playfair font-bold text-[#8A1739] mb-4">
-                        ABC Ventures <span className="text-[#D4AF37]">- {cityNames[currentCity]}</span>
+                        {cityInfo?.fullName || 'ABC Ventures'}
                     </h2>
                     <p className="font-medium text-[#D4AF37] text-lg max-w-2xl mx-auto">
-                        The best city view Dining
+                        {cityInfo?.description || 'The best city view Dining'}
                     </p>
                 </div>
 
                 {/* Menu Filter */}
                 <div className="flex flex-wrap justify-end gap-2 md:gap-3 mb-12">
-                    {filters.map((filter, index) => (
+                    {filters.map((filter) => (
                         <button
-                            key={index}
-                            onClick={() => handleFilterChange(filter)}
+                            key={filter.id}
+                            onClick={() => handleFilterChange(filter.slug)}
                             className={`px-6 py-3 rounded-tl-2xl rounded-br-2xl font-medium transition-all duration-300 text-sm md:text-base ${
-                                activeFilter === filter
+                                activeFilter === filter.slug
                                     ? "bg-white text-gray-800 shadow-md"
                                     : "bg-[#8A878766] text-white hover:bg-gray-400"
                             }`}
                         >
-                            {filter}
+                            {filter.name}
                         </button>
                     ))}
                 </div>
 
                 {/* Meals by Section or Filtered View */}
-                {activeFilter === "All" ? (
+                {activeFilter === "all" ? (
                     <>
                         {/* Breakfast Section */}
-                        {groupedMeals.Breakfast.length > 0 && (
+                        {groupedMeals.breakfast.length > 0 && (
                             <div className="mb-16">
                                 <h3 className="text-3xl font-playfair font-bold text-[#8A1739] mb-8">
                                     Breakfast
                                 </h3>
-                                {renderMealCards(groupedMeals.Breakfast)}
+                                {renderMealCards(groupedMeals.breakfast)}
                             </div>
                         )}
 
                         {/* Lunch Section */}
-                        {groupedMeals.Lunch.length > 0 && (
+                        {groupedMeals.lunch.length > 0 && (
                             <div className="mb-16">
                                 <h3 className="text-3xl font-playfair font-bold text-[#8A1739] mb-8">
                                     Lunch
                                 </h3>
-                                {renderMealCards(groupedMeals.Lunch)}
+                                {renderMealCards(groupedMeals.lunch)}
                             </div>
                         )}
 
                         {/* Dinner Section */}
-                        {groupedMeals.Dinner.length > 0 && (
+                        {groupedMeals.dinner.length > 0 && (
                             <div>
                                 <h3 className="text-3xl font-playfair font-bold text-[#8A1739] mb-8">
                                     Dinner
                                 </h3>
-                                {renderMealCards(groupedMeals.Dinner)}
+                                {renderMealCards(groupedMeals.dinner)}
                             </div>
                         )}
                     </>
                 ) : (
                     // Filtered view (when a specific category is selected)
-                    renderMealCards(cityMeals.filter(meal => meal.category === activeFilter))
+                    renderMealCards(cityMeals)
                 )}
             </div>
         </section>

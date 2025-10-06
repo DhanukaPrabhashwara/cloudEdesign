@@ -18,7 +18,7 @@ export default function ReservationContent({ meal }) {
     const [modalConfig, setModalConfig] = useState({ type: 'success', title: '', message: '' });
 
     // Gallery images
-    const galleryImages = [meal.image, meal.image, meal.image];
+    const galleryImages = meal.images || [meal.image, meal.image, meal.image];
 
     const handleAddToCart = () => {
         if (!selectedDate) {

@@ -20,14 +20,20 @@ export default function ReviewsSection({ reviews }) {
                     >
                         {/* User Info & Rating */}
                         <div className="flex items-start gap-4 mb-4">
-                            {/* User Avatar */}
-                            <div className="relative w-12 h-12 rounded-full overflow-hidden flex-shrink-0">
-                                <Image
-                                    src={review.avatar}
-                                    alt={review.name}
-                                    fill
-                                    className="object-cover"
-                                />
+                            {/* User Avatar WITH FALLBACK - FIXED */}
+                            <div className="relative w-12 h-12 rounded-full overflow-hidden flex-shrink-0 bg-gray-200">
+                                {review.avatar && review.avatar !== "" ? (
+                                    <Image
+                                        src={review.avatar}
+                                        alt={review.name}
+                                        fill
+                                        className="object-cover"
+                                    />
+                                ) : (
+                                    <div className="w-full h-full flex items-center justify-center bg-[#8A1739] text-white font-semibold text-lg">
+                                        {review.name.charAt(0)}
+                                    </div>
+                                )}
                             </div>
 
                             {/* Name & Rating */}

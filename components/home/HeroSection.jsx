@@ -2,18 +2,14 @@
 
 import React from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { getAllCities } from "@/lib/data/cities";
 
 function HeroSection() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const currentCity = searchParams.get('city') || 'city-a';
 
-    const cities = [
-        { id: 'city-a', name: 'ABC Ventures - City A' },
-        { id: 'city-b', name: 'ABC Ventures - City B' },
-        { id: 'city-c', name: 'ABC Ventures - City C' },
-        { id: 'city-d', name: 'ABC Ventures - City D' }
-    ];
+    const cities = getAllCities();
 
     const handleCityChange = (cityId) => {
         router.push(`/?city=${cityId}`, { scroll: false });
@@ -30,9 +26,9 @@ function HeroSection() {
             {/* Navigation Panel */}
             <div className="relative z-10 flex items-center justify-center h-full">
                 <nav className="flex flex-col md:flex-row gap-16">
-                    {cities.map((city, index) => (
+                    {cities.map((city) => (
                         <button
-                            key={index}
+                            key={city.id}
                             onClick={() => handleCityChange(city.id)}
                             className={`font-playfair font-medium text-2xl transition-colors duration-300 whitespace-nowrap ${
                                 currentCity === city.id
@@ -40,7 +36,7 @@ function HeroSection() {
                                     : "text-white hover:text-[#D4AF37]"
                             }`}
                         >
-                            {city.name}
+                            {city.fullName}
                         </button>
                     ))}
                 </nav>
