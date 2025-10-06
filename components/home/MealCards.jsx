@@ -2,10 +2,12 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const MealCards = () => {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const currentCity = searchParams.get('city') || 'city-a';
     const [activeFilter, setActiveFilter] = useState("All");
 
     const filters = [
@@ -23,90 +25,91 @@ const MealCards = () => {
             title: "Arabic Breakfast",
             description: "Enjoy the authentic Middle Eastern flavors",
             price: "USD 1,000",
-            priceValue: 1000,
             image: "/image.png",
             category: "Breakfast",
-            slug: "arabic-breakfast"
+            slug: "arabic-breakfast",
+            city: "city-a" // Add city field
         },
         {
             id: 2,
             title: "English Breakfast",
             description: "Taste the real British breakfast",
             price: "USD 1,000",
-            priceValue: 1000,
             image: "/englishbreakfast.png",
             category: "Breakfast",
-            slug: "english-breakfast"
+            slug: "english-breakfast",
+            city: "city-a"
         },
+        // Add more meals with city field...
         {
             id: 3,
             title: "Healthy Breakfast",
             description: "Delight in clean and nutritious breakfast",
             price: "USD 1,000",
-            priceValue: 1000,
             image: "/healthybreakfast.png",
             category: "Breakfast",
-            slug: "healthy-breakfast"
+            slug: "healthy-breakfast",
+            city: "city-a"
         },
         {
             id: 4,
             title: "Arabic Lunch",
             description: "Authentic Italian pasta with fresh ingredients",
             price: "USD 1,200",
-            priceValue: 1200,
             image: "/arabiclunch.png",
             category: "Lunch",
-            slug: "arabic-lunch"
+            slug: "arabic-lunch",
+            city: "city-a"
         },
         {
             id: 5,
             title: "English Lunch",
             description: "Fresh vegetables and protein in savory sauce",
             price: "USD 950",
-            priceValue: 950,
             image: "/englishlunch.png",
             category: "Lunch",
-            slug: "english-lunch"
+            slug: "english-lunch",
+            city: "city-a"
         },
         {
             id: 6,
             title: "Healthy Lunch",
             description: "Healthy Mediterranean diet bowl",
             price: "USD 1,100",
-            priceValue: 1100,
             image: "/healthylunch.png",
             category: "Lunch",
-            slug: "healthy-lunch"
+            slug: "healthy-lunch",
+            city: "city-a"
         },
         {
             id: 7,
             title: "Arabic Dinner",
             description: "Fresh salmon with seasonal vegetables",
             price: "USD 1,500",
-            priceValue: 1500,
             image: "/arabicdinner.png",
             category: "Dinner",
-            slug: "arabic-dinner"
+            slug: "arabic-dinner",
+            city: "city-a"
         },
         {
             id: 8,
             title: "English Dinner",
             description: "Premium beef steak cooked to perfection",
             price: "USD 1,800",
-            priceValue: 1800,
             image: "/englishdinner.png",
             category: "Dinner",
-            slug: "english-dinner"
+            slug: "english-dinner",
+            city: "city-a"
         },
         {
             id: 9,
             title: "Healthy Dinner",
             description: "Plant-based meal full of flavors",
             price: "USD 900",
-            priceValue: 900,
             image: "/healthydinner.png",
             category: "Dinner",
-            slug: "healthy-dinner"
+            slug: "healthy-dinner",
+            city: "city-a"
         }
     ];
 
@@ -115,26 +118,38 @@ const MealCards = () => {
     };
 
     const handleReserveTable = (meal) => {
-        // Navigate to reservation page with meal slug
-        router.push(`/reservation/${meal.slug}`);
+        router.push(`/reservation/${meal.slug}?city=${currentCity}`);
     };
 
+    // Filter by city first, then by category
+    const cityMeals = meals.filter(meal => meal.city === currentCity);
     const filteredMeals = activeFilter === "All" 
-        ? meals 
-        : meals.filter(meal => meal.category === activeFilter);
+        ? cityMeals 
+        : cityMeals.filter(meal => meal.category === activeFilter);
+
+    // Get city name for display
+    const cityNames = {
+        'city-a': 'City A',
+        'city-b': 'City B',
+        'city-c': 'City C',
+        'city-d': 'City D'
+    };
 
     return (
         <section className="py-16 bg-gray-50">
             <div className="container mx-auto px-4">
+                {/* Section Header */}
                 <div className="text-center mb-12">
                     <h2 className="text-5xl font-playfair font-bold text-[#8A1739] mb-4">
-                        ABC Ventures <span className="text-[#D4AF37]">- City A</span>
+                        ABC Ventures <span className="text-[#D4AF37]">- {cityNames[currentCity]}</span>
                     </h2>
+
                     <p className="font-medium text-[#D4AF37] text-lg max-w-2xl mx-auto">
                         The best city view Dining
                     </p>
                 </div>
 
+                {/* Menu Filter */}
                 <div className="flex flex-wrap justify-end gap-2 md:gap-3 mb-12">
                     {filters.map((filter, index) => (
                         <button
@@ -151,12 +166,14 @@ const MealCards = () => {
                     ))}
                 </div>
 
+                {/* Cards Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {filteredMeals.map((meal) => (
                         <div
                             key={meal.id}
                             className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
                         >
+                            {/* Image Container */}
                             <div className="relative h-48 bg-gray-200">
                                 {meal.image ? (
                                     <Image
@@ -172,6 +189,7 @@ const MealCards = () => {
                                 )}
                             </div>
 
+                            {/* Card Content */}
                             <div className="p-6">
                                 <div className="flex justify-between items-center mb-2">
                                     <h3 className="text-xl font-poppins font-medium text-gray-800">
@@ -186,14 +204,14 @@ const MealCards = () => {
 
                                 <div className="flex gap-3">
                                     <button
-                                        className="cursor-pointer flex-1 border py-2 px-4 rounded-tl-2xl rounded-br-2xl hover:bg-[rgba(138,23,57,0.1)] transition-colors duration-200 text-sm font-playfair font-medium"
+                                        className="flex-1 border py-2 px-4 rounded-tl-2xl rounded-br-2xl hover:bg-[rgba(138,23,57,0.1)] transition-colors duration-200 text-sm font-playfair font-medium"
                                         style={{ borderColor: "#8A1739", color: "#8A1739" }}
                                     >
                                         View Menu
                                     </button>
                                     <button
                                         onClick={() => handleReserveTable(meal)}
-                                        className="cursor-pointer flex-1 py-2 px-4 rounded-tl-2xl rounded-br-2xl hover:bg-[#8A1739]/90 transition-colors duration-200 text-sm font-playfair font-medium text-white"
+                                        className="flex-1 py-2 px-4 rounded-tl-2xl rounded-br-2xl hover:bg-[#8A1739]/90 transition-colors duration-200 text-sm font-playfair font-medium text-white"
                                         style={{ backgroundColor: "#8A1739" }}
                                     >
                                         Reserve Table Now

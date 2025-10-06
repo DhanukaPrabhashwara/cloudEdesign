@@ -1,16 +1,23 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 function HeroSection() {
-    const [selectedCity, setSelectedCity] = useState("ABC Ventures-City A");
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const currentCity = searchParams.get('city') || 'city-a';
 
     const cities = [
-        "ABC Ventures-City A",
-        "ABC Ventures-City B", 
-        "ABC Ventures-City C",
-        "ABC Ventures-City D"
+        { id: 'city-a', name: 'ABC Ventures - City A' },
+        { id: 'city-b', name: 'ABC Ventures - City B' },
+        { id: 'city-c', name: 'ABC Ventures - City C' },
+        { id: 'city-d', name: 'ABC Ventures - City D' }
     ];
+
+    const handleCityChange = (cityId) => {
+        router.push(`/?city=${cityId}`, { scroll: false });
+    };
 
     return (
         <div className="relative h-[500px] w-full">
@@ -26,14 +33,14 @@ function HeroSection() {
                     {cities.map((city, index) => (
                         <button
                             key={index}
-                            onClick={() => setSelectedCity(city)}
+                            onClick={() => handleCityChange(city.id)}
                             className={`font-playfair font-medium text-2xl transition-colors duration-300 whitespace-nowrap ${
-                                selectedCity === city
+                                currentCity === city.id
                                     ? "text-[#D4AF37]"
                                     : "text-white hover:text-[#D4AF37]"
                             }`}
                         >
-                            {city}
+                            {city.name}
                         </button>
                     ))}
                 </nav>
