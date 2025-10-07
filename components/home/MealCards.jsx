@@ -27,14 +27,14 @@ const MealCards = () => {
     // Get meals from data file instead of hardcoded array
     const cityMeals = getMealsByCityAndCategory(currentCity, activeFilter);
 
-    // Group by category for "All" filter
+    // Group by category for "all" filter
     const groupedMeals = {
         breakfast: cityMeals.filter(meal => meal.category === "breakfast"),
         lunch: cityMeals.filter(meal => meal.category === "lunch"),
         dinner: cityMeals.filter(meal => meal.category === "dinner")
     };
 
-    // Get city info
+    // Get city info for header
     const cityInfo = getCityById(currentCity);
 
     // Render meal cards
@@ -106,7 +106,7 @@ const MealCards = () => {
                     </p>
                 </div>
 
-                {/* Menu Filter */}
+                {/* Filters */}
                 <div className="flex flex-wrap justify-end gap-2 md:gap-3 mb-12">
                     {filters.map((filter) => (
                         <button
