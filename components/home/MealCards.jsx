@@ -1,20 +1,61 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { getMealsByCityAndCategory } from "@/lib/data/meals";
-import { getAllCategories } from "@/lib/data/categories";
-import { getCityById } from "@/lib/data/cities";
 
 const MealCards = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const currentCity = searchParams.get('city') || 'city-a';
-    const [activeFilter, setActiveFilter] = useState("all");
 
-    // Get filters from categories data
-    const filters = getAllCategories();
+    const [activeFilter, setActiveFilter] = useState("all");
+    const [filters, setFilters] = useState([]);
+    const [meals, setMeals] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    // Fetch categories (filters)
+    useEffect(() => {
+        async function fetchFilters() {
+            try {
+                const res = await fetch('/api/categories');
+                if (res.ok) {
+                    const data = await res.json();
+                    setFilters(data);
+                } else {
+                    console.error('Failed to fetch categories:', res.status);
+                }
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+            }
+        }
+        fetchFilters();
+    }, []);
+
+    // Fetch meals when currentCity or activeFilter changes
+    useEffect(() => {
+        async function fetchMeals() {
+            setLoading(true);
+            try {
+                let url = `/api/meals?city=${currentCity}`;
+                if (activeFilter && activeFilter !== 'all') {
+                    url += `&category=${activeFilter}`;
+                }
+                const res = await fetch(url);
+                if (res.ok) {
+                    const data = await res.json();
+                    setMeals(data);
+                } else {
+                    console.error('Failed to fetch meals:', res.status);
+                }
+            } catch (error) {
+                console.error('Error fetching meals:', error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchMeals();
+    }, [currentCity, activeFilter]);
 
     const handleFilterChange = (filterSlug) => {
         setActiveFilter(filterSlug);
@@ -24,25 +65,20 @@ const MealCards = () => {
         router.push(`/reservation/${meal.slug}?city=${currentCity}`);
     };
 
-    // Get meals from data file instead of hardcoded array
-    const cityMeals = getMealsByCityAndCategory(currentCity, activeFilter);
-
-    // Group by category for "all" filter
     const groupedMeals = {
-        breakfast: cityMeals.filter(meal => meal.category === "breakfast"),
-        lunch: cityMeals.filter(meal => meal.category === "lunch"),
-        dinner: cityMeals.filter(meal => meal.category === "dinner")
+        breakfast: meals.filter(meal => meal.category === "breakfast"),
+        lunch: meals.filter(meal => meal.category === "lunch"),
+        dinner: meals.filter(meal => meal.category === "dinner"),
     };
 
-    // Get city info for header
-    const cityInfo = getCityById(currentCity);
+    // You could fetch city info in a similar way or keep static as needed
+    // For simplicity omitted here
 
-    // Render meal cards
-    const renderMealCards = (meals) => (
+    const renderMealCards = (mealsToRender) => (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {meals.map((meal) => (
+            {mealsToRender.map((meal) => (
                 <div
-                    key={meal.id}
+                    key={meal._id || meal.id}
                     className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
                 >
                     <div className="relative h-48 bg-gray-200">
@@ -93,24 +129,21 @@ const MealCards = () => {
         </div>
     );
 
+    if (loading) {
+        return <div className="text-center py-16">Loading meals...</div>;
+    }
+
     return (
         <section className="py-16 bg-gray-50">
             <div className="container mx-auto px-4">
                 {/* Section Header */}
-                <div className="text-center mb-12">
-                    <h2 className="text-5xl font-playfair font-bold text-[#8A1739] mb-4">
-                        {cityInfo?.fullName || 'ABC Ventures'}
-                    </h2>
-                    <p className="font-medium text-[#D4AF37] text-lg max-w-2xl mx-auto">
-                        {cityInfo?.description || 'The best city view Dining'}
-                    </p>
-                </div>
+                {/* Add any header you want here */}
 
-                {/* Filters */}
+                {/* Menu Filter */}
                 <div className="flex flex-wrap justify-end gap-2 md:gap-3 mb-12">
                     {filters.map((filter) => (
                         <button
-                            key={filter.id}
+                            key={filter._id || filter.id}
                             onClick={() => handleFilterChange(filter.slug)}
                             className={`px-6 py-3 rounded-tl-2xl rounded-br-2xl font-medium transition-all duration-300 text-sm md:text-base ${
                                 activeFilter === filter.slug
@@ -126,7 +159,6 @@ const MealCards = () => {
                 {/* Meals by Section or Filtered View */}
                 {activeFilter === "all" ? (
                     <>
-                        {/* Breakfast Section */}
                         {groupedMeals.breakfast.length > 0 && (
                             <div className="mb-16">
                                 <h3 className="text-3xl font-playfair font-bold text-[#8A1739] mb-8">
@@ -135,8 +167,6 @@ const MealCards = () => {
                                 {renderMealCards(groupedMeals.breakfast)}
                             </div>
                         )}
-
-                        {/* Lunch Section */}
                         {groupedMeals.lunch.length > 0 && (
                             <div className="mb-16">
                                 <h3 className="text-3xl font-playfair font-bold text-[#8A1739] mb-8">
@@ -145,8 +175,6 @@ const MealCards = () => {
                                 {renderMealCards(groupedMeals.lunch)}
                             </div>
                         )}
-
-                        {/* Dinner Section */}
                         {groupedMeals.dinner.length > 0 && (
                             <div>
                                 <h3 className="text-3xl font-playfair font-bold text-[#8A1739] mb-8">
@@ -157,8 +185,7 @@ const MealCards = () => {
                         )}
                     </>
                 ) : (
-                    // Filtered view (when a specific category is selected)
-                    renderMealCards(cityMeals)
+                    renderMealCards(meals)
                 )}
             </div>
         </section>

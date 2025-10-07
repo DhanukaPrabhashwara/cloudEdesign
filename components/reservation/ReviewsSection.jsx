@@ -1,45 +1,10 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Image from 'next/image';
 
-export default function ReviewsSection({ mealId }) {
-    const [reviews, setReviews] = useState([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        if (!mealId) return;
-
-        async function fetchReviews() {
-            setLoading(true);
-            try {
-                const response = await fetch(`/api/reviews?mealId=${mealId}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    setReviews(data);
-                } else {
-                    console.error('Failed to fetch reviews', response.status);
-                }
-            } catch (error) {
-                console.error('Failed to fetch reviews', error);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        fetchReviews();
-    }, [mealId]);
-
-    if (loading) {
-        return (
-            <section className="container mx-auto px-4 py-16">
-                <h2 className="text-4xl font-playfair font-bold text-[#8A1739] text-center mb-12">Reviews</h2>
-                <p className="text-center text-gray-600">Loading reviews...</p>
-            </section>
-        );
-    }
-
-    if (reviews.length === 0) {
+export default function ReviewsSection({ reviews = [] }) {
+    if (!reviews || reviews.length === 0) {
         return (
             <section className="container mx-auto px-4 py-16">
                 <h2 className="text-4xl font-playfair font-bold text-[#8A1739] text-center mb-12">Reviews</h2>
@@ -76,8 +41,15 @@ export default function ReviewsSection({ mealId }) {
                                 </div>
                             </div>
                         </div>
-                        <p className="text-gray-600 text-sm leading-relaxed mb-4">"{review.comment}"</p>
-                        <p className="text-gray-400 text-xs text-right">{review.date}</p>
+                        <p className="text-gray-400 text-sm leading-relaxed mb-4">"{review.comment}"</p>
+                        <p className="text-gray-400 text-xs text-right">
+                            {new Date(review.date).toLocaleDateString("en-US", {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric"
+                            })}
+                        </p>
+
                     </div>
                 ))}
             </div>
