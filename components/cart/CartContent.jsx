@@ -61,7 +61,7 @@ export default function CartContent() {
             {/* Go Back Button */}
             <button
                 onClick={() => router.back()}
-                className="flex items-center gap-2 text-[#8A1739] mb-6 hover:underline"
+                className="flex items-center gap-2 text-[#8A1739] mb-6 hover:text-[#8A1739]/80 transition-colors"
             >
                 <span>&lt;</span>
                 <span>Go Back</span>
